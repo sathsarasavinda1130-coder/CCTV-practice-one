@@ -1,2 +1,2 @@
-# CCTV-practice-one
-practice 1
+CREATE DATABASE smart_attendance;
+
