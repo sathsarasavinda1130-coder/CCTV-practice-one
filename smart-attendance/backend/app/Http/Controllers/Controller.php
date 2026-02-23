@@ -2,7 +2,14 @@
 
 namespace App\Http\Controllers;
 
-abstract class Controller
+use Illuminate\Http\Request;
+use App\Models\Attendance;
+
+class AttendanceController extends Controller
 {
-    //
+    public function index()
+    {
+        $attendances = Attendance::all();
+        return view('attendance', compact('attendances'));
+    }
 }
