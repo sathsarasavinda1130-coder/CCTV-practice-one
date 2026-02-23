@@ -7,19 +7,27 @@ use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
+    // Show all students
     public function index()
     {
         return Student::all();
     }
 
+    // Store new student
     public function store(Request $request)
     {
-        Student::create($request->only([
-            'name',
-            'email',
-            'registration_no'
-        ]));
+        // Validation
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:students,email',
+            'registration_no' => 'required|unique:students,registration_no'
+        ]);
 
-        return redirect()->route('students.index');
+        // Create student
+        Student::create($validated);
+
+        // Redirect with success message
+        return redirect()->route('students.index')
+                         ->with('success', 'Student Added Successfully');
     }
 }

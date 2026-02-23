@@ -1,10 +1,15 @@
-use App\Models\Student;
-use Illuminate\Http\Request;
+<?php
 
-Route::get('/students', function () {
-    return Student::all();
-});
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\AttendanceController; 
 
-Route::post('/students', function (Request $request) {
-    return Student::create($request->all());
-});
+/*
+|--------------------------------------------------------------------------
+| Student Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/students', [StudentController::class, 'index']);
+Route::post('/students', [StudentController::class, 'store']);
+Route::post('/attendance/mark', [AttendanceController::class, 'mark']);
