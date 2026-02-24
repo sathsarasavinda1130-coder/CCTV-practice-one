@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentController;
-use App\Http\Controllers\AttendanceController; // 👈 meka add karanna
+use App\Http\Controllers\AttendanceController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -11,5 +11,6 @@ Route::get('/', function () {
 Route::resource('students', StudentController::class);
 
 // Attendance Routes
-Route::get('/attendance', [AttendanceController::class, 'index']);
-Route::get('/attendance/mark', [AttendanceController::class, 'mark']);
+Route::get('/attendance', [AttendanceController::class, 'showForm']);
+Route::post('/attendance/mark', [AttendanceController::class, 'mark']);
+Route::get('/attendance/list', [AttendanceController::class, 'index']);

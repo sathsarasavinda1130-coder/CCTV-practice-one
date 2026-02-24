@@ -13,6 +13,7 @@ class Attendance extends Model
         'check_out'
     ];
 
+    // Relationship with Student
     public function student()
     {
         return $this->belongsTo(Student::class);
