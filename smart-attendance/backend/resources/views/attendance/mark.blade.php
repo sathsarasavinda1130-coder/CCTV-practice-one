@@ -1,34 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Attendance</title>
+    <title>Add Student</title>
 </head>
 <body>
 
-<h2>Mark Attendance</h2>
+<h2>Add Student</h2>
 
-@if(isset($students) && count($students) > 0)
-
-<form method="POST" action="/attendance/mark">
+<form method="POST" action="/students" enctype="multipart/form-data">
     @csrf
 
-    <select name="student_id">
-        @foreach($students as $student)
-            <option value="{{ $student->id }}">
-                {{ $student->name }}
-            </option>
-        @endforeach
-    </select>
+    <!-- Student Name -->
+    <div>
+        <label>Student Name:</label><br>
+        <input type="text" name="name" placeholder="Enter Name" required>
+    </div>
 
-    <button type="submit">Mark Present</button>
+    <br>
+
+    <!-- Email -->
+    <div>
+        <label>Email:</label><br>
+        <input type="email" name="email" placeholder="Enter Email" required>
+    </div>
+
+    <br>
+
+    <!-- Registration Number -->
+    <div>
+        <label>Registration No:</label><br>
+        <input type="text" name="registration_no" placeholder="Enter Reg No" required>
+    </div>
+
+    <br>
+
+    <!-- Photo Upload -->
+    <div>
+        <label>Photo:</label><br>
+        <input type="file" name="photo">
+    </div>
+
+    <br>
+
+    <!-- Branch Dropdown -->
+    <div>
+        <label>Select Branch:</label><br>
+        <select name="branch_id" required>
+            @foreach($branches as $branch)
+                <option value="{{ $branch->id }}">
+                    {{ $branch->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <br>
+
+    <button type="submit">Save Student</button>
 
 </form>
-
-@else
-
-<p>No students found.</p>
-
-@endif
 
 </body>
 </html>

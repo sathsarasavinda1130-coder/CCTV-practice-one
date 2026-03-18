@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\Branch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
 {
+
+    public function create()
+    {
+        $branches = Branch::all();
+        return view('students.create', compact('branches'));
+    }
+
     public function index()
     {
         $students = Student::all()->map(function ($student) {
@@ -31,7 +39,8 @@ class StudentController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:students,email',
             'registration_no' => 'required|unique:students,registration_no',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'branch_id' => 'required|exists:branches,id'
         ]);
 
         if ($validator->fails()) {

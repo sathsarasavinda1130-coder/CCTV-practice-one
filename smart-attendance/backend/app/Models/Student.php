@@ -10,6 +10,7 @@ class Student extends Model
         'name',
         'email',
         'registration_no',
+        'branch_id',
         'photo'
     ];
 
@@ -21,4 +22,5 @@ class Student extends Model
 {
     return $this->hasMany(Attendance::class);
 }
+
 }
