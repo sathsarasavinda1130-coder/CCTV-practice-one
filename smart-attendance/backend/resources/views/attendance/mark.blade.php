@@ -1,63 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Student</title>
+    <title>Attendance</title>
 </head>
 <body>
 
-<h2>Add Student</h2>
+<h2>Mark Attendance</h2>
 
-<form method="POST" action="/students" enctype="multipart/form-data">
+@if(session('success'))
+    <p style="color:green">{{ session('success') }}</p>
+@endif
+
+@if(session('error'))
+    <p style="color:red">{{ session('error') }}</p>
+@endif
+
+<!-- MANUAL FORM -->
+<form method="POST" action="/attendance/mark">
     @csrf
 
-    <!-- Student Name -->
-    <div>
-        <label>Student Name:</label><br>
-        <input type="text" name="name" placeholder="Enter Name" required>
-    </div>
+    <label>Select Student:</label><br>
 
-    <br>
+    <select name="student_id" required>
+        <option value="">-- Select Student --</option>
+        @foreach($students as $student)
+            <option value="{{ $student->id }}">
+                {{ $student->name }}
+            </option>
+        @endforeach
+    </select>
 
-    <!-- Email -->
-    <div>
-        <label>Email:</label><br>
-        <input type="email" name="email" placeholder="Enter Email" required>
-    </div>
+    <br><br>
 
-    <br>
+    <button type="submit">Mark Attendance</button>
+</form>
 
-    <!-- Registration Number -->
-    <div>
-        <label>Registration No:</label><br>
-        <input type="text" name="registration_no" placeholder="Enter Reg No" required>
-    </div>
+<hr>
 
-    <br>
+<!-- AUTO BUTTON (simulate camera scan) -->
+<h3>Auto Scan (Simulation)</h3>
 
-    <!-- Photo Upload -->
-    <div>
-        <label>Photo:</label><br>
-        <input type="file" name="photo">
-    </div>
+<form method="POST" action="/attendance/auto">
+    @csrf
 
-    <br>
+    <input type="number" name="student_id" placeholder="Enter ID (simulate scan)" required>
 
-    <!-- Branch Dropdown -->
-    <div>
-        <label>Select Branch:</label><br>
-        <select name="branch_id" required>
-            @foreach($branches as $branch)
-                <option value="{{ $branch->id }}">
-                    {{ $branch->name }}
-                </option>
-            @endforeach
-        </select>
-    </div>
-
-    <br>
-
-    <button type="submit">Save Student</button>
-
+    <button type="submit">Auto Mark</button>
 </form>
 
 </body>

@@ -9,88 +9,77 @@ use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
-    // Show attendance mark form
+    // Show Form
     public function showForm()
     {
         $students = Student::orderBy('name')->get();
         return view('attendance.mark', compact('students'));
     }
 
-    // Mark Check-in / Check-out
+    // ===============================
+    // MANUAL MARK
+    // ===============================
     public function mark(Request $request)
     {
-        // ✅ Basic Validation
         $request->validate([
-            'student_id' => 'required|integer|exists:students,id',
-        ], [
-            'student_id.required' => 'Please select a student.',
-            'student_id.exists'   => 'Selected student does not exist.',
+            'student_id' => 'required|exists:students,id',
         ]);
 
-        $today = Carbon::today()->toDateString();
-        $now = Carbon::now();
-        $currentTime = $now->format('H:i:s');
+        return $this->processAttendance($request->student_id);
+    }
 
-        // ✅ Prevent future date manipulation (extra safety)
-        if ($now->isFuture()) {
-            return back()->with('error', 'Invalid system time.');
+    // ===============================
+    // AUTO MARK (API / CAMERA)
+    // ===============================
+    public function autoMark(Request $request)
+    {
+        // example: student_id from face recognition
+        $studentId = $request->student_id;
+
+        if (!$studentId) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Student ID not detected'
+            ]);
         }
 
-        // ✅ Check if record already exists today
-        $attendance = Attendance::where('student_id', $request->student_id)
+        return $this->processAttendance($studentId);
+    }
+
+    // ===============================
+    // COMMON LOGIC
+    // ===============================
+    private function processAttendance($studentId)
+    {
+        $today = Carbon::today()->toDateString();
+        $now = Carbon::now();
+        $time = $now->format('H:i:s');
+
+        $attendance = Attendance::where('student_id', $studentId)
             ->whereDate('date', $today)
             ->first();
 
-        // ===============================
-        // FIRST SCAN → CHECK-IN
-        // ===============================
+        // CHECK-IN
         if (!$attendance) {
-
-            // Optional: Prevent too-early check-in (example before 5 AM)
-            if ($now->hour < 5) {
-                return back()->with('error', 'Check-in not allowed at this time.');
-            }
-
             Attendance::create([
-                'student_id' => $request->student_id,
-                'date'       => $today,
-                'check_in'   => $currentTime,
+                'student_id' => $studentId,
+                'date' => $today,
+                'check_in' => $time,
             ]);
 
             return back()->with('success', 'Check-in successful');
         }
 
-        // ===============================
-        // PREVENT MULTIPLE CHECK-OUT
-        // ===============================
+        // Already checked out
         if ($attendance->check_out) {
-            return back()->with('error', 'Attendance already completed for today.');
+            return back()->with('error', 'Already completed today');
         }
 
-        // Prevent checkout within 1 minute of check-in
-        $checkInTime = Carbon::createFromFormat('H:i:s', $attendance->check_in);
-        if ($checkInTime->diffInSeconds($now) < 60) {
-            return back()->with('error', 'Check-out not allowed within 1 minute of check-in.');
-        }
-
-        // ===============================
-        // SECOND SCAN → CHECK-OUT
-        // ===============================
+        // CHECK-OUT
         $attendance->update([
-            'check_out' => $currentTime,
+            'check_out' => $time,
         ]);
 
         return back()->with('success', 'Check-out successful');
-    }
-
-    // Attendance List Page
-    public function index()
-    {
-        $attendances = Attendance::with('student')
-            ->orderBy('date', 'desc')
-            ->orderBy('check_in', 'desc')
-            ->get();
-        $attendances = Attendance::all();
-        return view('attendance.index', compact('attendances'));
     }
 }

@@ -13,4 +13,6 @@ Route::resource('students', StudentController::class);
 // Attendance Routes
 Route::get('/attendance', [AttendanceController::class, 'showForm']);
 Route::post('/attendance/mark', [AttendanceController::class, 'mark']);
-Route::get('/attendance/list', [AttendanceController::class, 'index']);
+
+// (optional) auto API route
+Route::post('/attendance/auto', [AttendanceController::class, 'autoMark']);
