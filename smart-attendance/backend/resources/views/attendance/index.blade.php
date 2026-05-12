@@ -12,8 +12,7 @@
     <table class="table table-bordered">
         <thead class="table-dark">
             <tr>
-                <th>#</th>
-                <th>Student Name</th>
+                <th>Student</th>
                 <th>Date</th>
                 <th>Check In</th>
                 <th>Check Out</th>
@@ -22,11 +21,10 @@
         <tbody>
             @forelse($attendances as $attendance)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $attendance->student->name ?? 'N/A' }}</td>
+                    <td>{{ $attendance->student->name ?? 'No Student' }}</td>
                     <td>{{ $attendance->date }}</td>
                     <td>{{ $attendance->check_in ?? '-' }}</td>
-                    <td>{{ $attendance->check_out ?? '-' }}</td>
+                    <td>{{ $attendance->check_out ?? 'Not checked out' }}</td>
                 </tr>
             @empty
                 <tr>

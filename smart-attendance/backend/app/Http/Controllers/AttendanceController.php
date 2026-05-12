@@ -82,4 +82,17 @@ class AttendanceController extends Controller
 
         return back()->with('success', 'Check-out successful');
     }
+
+    // ===============================
+    // ATTENDANCE LIST PAGE
+    // ===============================
+    public function index()
+    {
+        $attendances = Attendance::with('student')
+            ->orderBy('date', 'desc')
+            ->orderBy('check_in', 'desc')
+            ->get();
+
+        return view('attendance.index', compact('attendances'));
+    }
 }

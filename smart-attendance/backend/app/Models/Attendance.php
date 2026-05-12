@@ -10,12 +10,18 @@ class Attendance extends Model
         'student_id',
         'date',
         'check_in',
-        'check_out'
+        'check_out',
     ];
 
     // Relationship with Student
     public function student()
     {
         return $this->belongsTo(Student::class);
+    }
+
+    // Relationship with Branch
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
     }
 }
